@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-11-03 17:56:08
+# Timestamp: 2017-11-03 18:03:47
 
 FROM neurodebian:stretch-non-free
 
@@ -56,7 +56,7 @@ RUN echo "Downloading Miniconda installer ..." \
 #-------------------------
 RUN conda create -y -q --name neuro python=3.6 \
                                     jupyter \
-                                    notebook \
+                                    jupyter_contrib_nbextensions \
     && sync && conda clean -tipsy && sync \
     && sed -i '$isource activate neuro' $ND_ENTRYPOINT
 
@@ -75,6 +75,9 @@ CMD ["jupyter-notebook"]
 RUN mkdir ~/.jupyter && echo c.NotebookApp.ip = \"0.0.0.0\" > ~/.jupyter/jupyter_notebook_config.py
 
 WORKDIR /home/neuro
+
+# User-defined BASH instruction
+RUN bash -c "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main"
 
 #--------------------------------------
 # Save container specifications to JSON
@@ -96,7 +99,7 @@ RUN echo '{ \
     \n      { \
     \n        "env_name": "neuro", \
     \n        "activate": "true", \
-    \n        "conda_install": "python=3.6 jupyter notebook" \
+    \n        "conda_install": "python=3.6 jupyter jupyter_contrib_nbextensions" \
     \n      } \
     \n    ], \
     \n    [ \
@@ -131,8 +134,12 @@ RUN echo '{ \
     \n    [ \
     \n      "workdir", \
     \n      "/home/neuro" \
+    \n    ], \
+    \n    [ \
+    \n      "run_bash", \
+    \n      "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-11-03 17:56:08", \
+    \n  "generation_timestamp": "2017-11-03 18:03:47", \
     \n  "neurodocker_version": "0.3.1-19-g8d02eb4" \
     \n}' > /neurodocker/neurodocker_specs.json
