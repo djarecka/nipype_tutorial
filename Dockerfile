@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-11-03 19:16:37
+# Timestamp: 2017-11-03 19:44:21
 
 FROM neurodebian:stretch-non-free
 
@@ -91,6 +91,9 @@ RUN apt-get update -qq \
                                                      git-annex-remote-rclone \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Add command(s) to entrypoint
+RUN sed -i '$isource /etc/fsl/fsl.sh' $ND_ENTRYPOINT
 
 #----------------------
 # Install MCR and SPM12
@@ -236,6 +239,12 @@ RUN echo '{ \
     \n      ] \
     \n    ], \
     \n    [ \
+    \n      "add_to_entrypoint", \
+    \n      [ \
+    \n        "source /etc/fsl/fsl.sh" \
+    \n      ] \
+    \n    ], \
+    \n    [ \
     \n      "spm", \
     \n      { \
     \n        "version": "12", \
@@ -301,6 +310,6 @@ RUN echo '{ \
     \n      ] \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-11-03 19:16:37", \
+    \n  "generation_timestamp": "2017-11-03 19:44:21", \
     \n  "neurodocker_version": "0.3.1-19-g8d02eb4" \
     \n}' > /neurodocker/neurodocker_specs.json
