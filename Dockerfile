@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-11-03 15:56:48
+# Timestamp: 2017-11-03 15:59:06
 
 FROM neurodebian:stretch-non-free
 
@@ -70,6 +70,11 @@ USER neuro
 
 CMD ["jupyter-notebook"]
 
+# User-defined instruction
+RUN mkdir ~/.jupyter && echo c.NotebookApp.ip = \"0.0.0.0\" > ~/.jupyter/jupyter_notebook_config.py
+
+WORKDIR /home/neuro
+
 #--------------------------------------
 # Save container specifications to JSON
 #--------------------------------------
@@ -117,8 +122,16 @@ RUN echo '{ \
     \n      [ \
     \n        "jupyter-notebook" \
     \n      ] \
+    \n    ], \
+    \n    [ \
+    \n      "run", \
+    \n      "mkdir ~/.jupyter && echo c.NotebookApp.ip = \\\"0.0.0.0\\\" > ~/.jupyter/jupyter_notebook_config.py" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-11-03 15:56:48", \
+    \n  "generation_timestamp": "2017-11-03 15:59:06", \
     \n  "neurodocker_version": "0.3.1-19-g8d02eb4" \
     \n}' > /neurodocker/neurodocker_specs.json
