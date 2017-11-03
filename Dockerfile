@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-11-03 15:34:57
+# Timestamp: 2017-11-03 15:56:48
 
 FROM neurodebian:stretch-non-free
 
@@ -32,6 +32,10 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends  \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 ENTRYPOINT ["/neurodocker/startup.sh"]
 
+# Create new user: neuro
+RUN useradd --no-user-group --create-home --shell /bin/bash neuro
+USER neuro
+
 #------------------
 # Install Miniconda
 #------------------
@@ -55,6 +59,17 @@ RUN conda create -y -q --name neuro python=3.6 \
     && sync && conda clean -tipsy && sync \
     && sed -i '$isource activate neuro' $ND_ENTRYPOINT
 
+COPY [".", "/home/neuro/"]
+
+USER root
+
+# User-defined instruction
+RUN chown -R neuro ${HOME}
+
+USER neuro
+
+CMD ["jupyter-notebook"]
+
 #--------------------------------------
 # Save container specifications to JSON
 #--------------------------------------
@@ -67,14 +82,43 @@ RUN echo '{ \
     \n      "neurodebian:stretch-non-free" \
     \n    ], \
     \n    [ \
+    \n      "user", \
+    \n      "neuro" \
+    \n    ], \
+    \n    [ \
     \n      "miniconda", \
     \n      { \
     \n        "env_name": "neuro", \
     \n        "activate": "true", \
     \n        "conda_install": "python=3.6 jupyter" \
     \n      } \
+    \n    ], \
+    \n    [ \
+    \n      "copy", \
+    \n      [ \
+    \n        ".", \
+    \n        "/home/neuro/" \
+    \n      ] \
+    \n    ], \
+    \n    [ \
+    \n      "user", \
+    \n      "root" \
+    \n    ], \
+    \n    [ \
+    \n      "run", \
+    \n      "chown -R neuro ${HOME}" \
+    \n    ], \
+    \n    [ \
+    \n      "user", \
+    \n      "neuro" \
+    \n    ], \
+    \n    [ \
+    \n      "cmd", \
+    \n      [ \
+    \n        "jupyter-notebook" \
+    \n      ] \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-11-03 15:34:57", \
+    \n  "generation_timestamp": "2017-11-03 15:56:48", \
     \n  "neurodocker_version": "0.3.1-19-g8d02eb4" \
     \n}' > /neurodocker/neurodocker_specs.json
