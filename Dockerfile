@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-11-03 15:59:06
+# Timestamp: 2017-11-03 17:24:50
 
 FROM neurodebian:stretch-non-free
 
@@ -55,8 +55,11 @@ RUN echo "Downloading Miniconda installer ..." \
 # Create conda environment
 #-------------------------
 RUN conda create -y -q --name neuro python=3.6 \
-                                    jupyter \
     && sync && conda clean -tipsy && sync \
+    && /bin/bash -c "source activate neuro \
+      && pip install -q --no-cache-dir jupyter \
+                                       notebook" \
+    && sync \
     && sed -i '$isource activate neuro' $ND_ENTRYPOINT
 
 COPY [".", "/home/neuro/"]
@@ -95,7 +98,8 @@ RUN echo '{ \
     \n      { \
     \n        "env_name": "neuro", \
     \n        "activate": "true", \
-    \n        "conda_install": "python=3.6 jupyter" \
+    \n        "conda_install": "python=3.6", \
+    \n        "pip_install": "jupyter notebook" \
     \n      } \
     \n    ], \
     \n    [ \
@@ -132,6 +136,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-11-03 15:59:06", \
+    \n  "generation_timestamp": "2017-11-03 17:24:50", \
     \n  "neurodocker_version": "0.3.1-19-g8d02eb4" \
     \n}' > /neurodocker/neurodocker_specs.json
