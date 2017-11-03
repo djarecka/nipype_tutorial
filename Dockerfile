@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-11-03 17:42:43
+# Timestamp: 2017-11-03 17:56:08
 
 FROM neurodebian:stretch-non-free
 
@@ -65,7 +65,7 @@ COPY [".", "/home/neuro/"]
 USER root
 
 # User-defined instruction
-RUN chown -R neuro ${HOME}
+RUN chown -R neuro /home/neuro
 
 USER neuro
 
@@ -112,7 +112,7 @@ RUN echo '{ \
     \n    ], \
     \n    [ \
     \n      "run", \
-    \n      "chown -R neuro ${HOME}" \
+    \n      "chown -R neuro /home/neuro" \
     \n    ], \
     \n    [ \
     \n      "user", \
@@ -133,6 +133,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-11-03 17:42:43", \
+    \n  "generation_timestamp": "2017-11-03 17:56:08", \
     \n  "neurodocker_version": "0.3.1-19-g8d02eb4" \
     \n}' > /neurodocker/neurodocker_specs.json
