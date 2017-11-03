@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-11-03 15:20:27
+# Timestamp: 2017-11-03 18:34:49
 
 FROM neurodebian:stretch-non-free
 
@@ -142,6 +142,7 @@ RUN echo "Downloading Miniconda installer ..." \
 RUN conda create -y -q --name neuro python=3.6 \
                                     jupyter \
                                     jupyterlab \
+                                    jupyter_contrib_nbextensions \
                                     traits \
                                     pandas \
                                     matplotlib \
@@ -153,9 +154,9 @@ RUN conda create -y -q --name neuro python=3.6 \
     && sync && conda clean -tipsy && sync \
     && /bin/bash -c "source activate neuro \
       && pip install -q --no-cache-dir https://github.com/nipy/nipype/tarball/master \
-                                       nilearn \
                                        https://github.com/INCF/pybids/tarball/master \
-                                       datalad \
+                                       nilearn \
+                                       datalad[full] \
                                        dipy \
                                        nipy \
                                        duecredit \
@@ -163,19 +164,27 @@ RUN conda create -y -q --name neuro python=3.6 \
     && sync \
     && sed -i '$isource activate neuro' $ND_ENTRYPOINT
 
-WORKDIR /home/neuro
+# User-defined BASH instruction
+RUN bash -c "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main"
 
 # User-defined instruction
 RUN mkdir ~/.jupyter && echo c.NotebookApp.ip = \"0.0.0.0\" > ~/.jupyter/jupyter_notebook_config.py
 
-#-------------------------
-# Update conda environment
-#-------------------------
-RUN conda install -y -q --name neuro jupyter_contrib_nbextensions \
-    && sync && conda clean -tipsy && sync
+COPY [".", "/home/neuro/"]
 
-# User-defined BASH instruction
-RUN bash -c "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main"
+USER root
+
+# User-defined instruction
+RUN chown -R neuro /home/neuro
+
+# User-defined instruction
+RUN mkdir /data && chmod 777 /data && chmod a+s /data
+
+USER neuro
+
+WORKDIR /home/neuro
+
+CMD ["jupyter-notebook"]
 
 #--------------------------------------
 # Save container specifications to JSON
@@ -237,32 +246,54 @@ RUN echo '{ \
     \n    [ \
     \n      "miniconda", \
     \n      { \
-    \n        "conda_install": "python=3.6 jupyter jupyterlab traits pandas matplotlib scikit-learn seaborn swig reprozip reprounzip", \
+    \n        "conda_install": "python=3.6 jupyter jupyterlab jupyter_contrib_nbextensions traits pandas matplotlib scikit-learn seaborn swig reprozip reprounzip", \
+    \n        "pip_install": "https://github.com/nipy/nipype/tarball/master https://github.com/INCF/pybids/tarball/master nilearn datalad[full] dipy nipy duecredit pymvpa2", \
     \n        "env_name": "neuro", \
-    \n        "activate": "True", \
-    \n        "pip_install": "https://github.com/nipy/nipype/tarball/master nilearn https://github.com/INCF/pybids/tarball/master datalad dipy nipy duecredit pymvpa2" \
+    \n        "activate": "True" \
     \n      } \
     \n    ], \
     \n    [ \
-    \n      "workdir", \
-    \n      "/home/neuro" \
+    \n      "run_bash", \
+    \n      "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main" \
     \n    ], \
     \n    [ \
     \n      "run", \
     \n      "mkdir ~/.jupyter && echo c.NotebookApp.ip = \\\"0.0.0.0\\\" > ~/.jupyter/jupyter_notebook_config.py" \
     \n    ], \
     \n    [ \
-    \n      "miniconda", \
-    \n      { \
-    \n        "env_name": "neuro", \
-    \n        "conda_install": "jupyter_contrib_nbextensions" \
-    \n      } \
+    \n      "copy", \
+    \n      [ \
+    \n        ".", \
+    \n        "/home/neuro/" \
+    \n      ] \
     \n    ], \
     \n    [ \
-    \n      "run_bash", \
-    \n      "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main" \
+    \n      "user", \
+    \n      "root" \
+    \n    ], \
+    \n    [ \
+    \n      "run", \
+    \n      "chown -R neuro /home/neuro" \
+    \n    ], \
+    \n    [ \
+    \n      "run", \
+    \n      "mkdir /data && chmod 777 /data && chmod a+s /data" \
+    \n    ], \
+    \n    [ \
+    \n      "user", \
+    \n      "neuro" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/home/neuro" \
+    \n    ], \
+    \n    [ \
+    \n      "cmd", \
+    \n      [ \
+    \n        "jupyter-notebook" \
+    \n      ] \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-11-03 15:20:27", \
+    \n  "generation_timestamp": "2017-11-03 18:34:49", \
     \n  "neurodocker_version": "0.3.1-19-g8d02eb4" \
     \n}' > /neurodocker/neurodocker_specs.json
