@@ -1,0 +1,8 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker pull djarecka/nipype_tutorial
+    steps:
+      - checkout
+      - run: echo "A first hello"
