@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: djarecka/nipype_tutorial
+      - image: docker:17.10.0-ce-git
     steps:
       - checkout
       - setup_remote_docker
@@ -10,5 +10,5 @@ jobs:
       - run:
           name: docker run
           command: |
-            docker run -it --rm djarecka/nipype_tutorial
+            docker run -it --rm djarecka/nipype_tutorial echo "A second hello"
          
