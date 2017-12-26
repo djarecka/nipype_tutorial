@@ -8,9 +8,14 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: echo "A first hello"
-      - run: docker build -t djarecka/nipype_tutorial:$CIRCLE_BRANCH .
+      - run: 
+          name: docker build
+          no_output_timeout: 60m
+          command: |
+            docker build -t djarecka/nipype_tutorial:$CIRCLE_BRANCH .
       - run:
           name: docker run
+          no_output_timeout: 60m
           command: |
             docker run -it --rm djarecka/nipype_tutorial:$CIRCLE_BRANCH pytest /home/neuro/nipype_tutorial/test_notebooks.py
          
