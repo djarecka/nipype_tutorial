@@ -7,8 +7,12 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: echo "A first hello"
+      - run: 
+          name: dicker buils
+	  command: |
+	    docker build -t djarecka/nipype_tutorial:$CIRCLE_BRANCH .
       - run:
           name: docker run
           command: |
-            docker run -it --rm -v $PWD:/home/neuro/nipype_tutorial djarecka/nipype_tutorial pytest /home/neuro/nipype_tutorial/test_notebooks.py
+            docker run -it --rm -v $PWD:/home/neuro/nipype_tutorial djarecka/nipype_tutorial:$CIRCLE_BRANCH pytest /home/neuro/nipype_tutorial/test_notebooks.py
          
