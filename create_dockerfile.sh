@@ -9,7 +9,7 @@ docker run --rm kaczmarj/neurodocker:master generate -b neurodebian:stretch-non-
 --user=neuro \
 --miniconda \
   conda_install="python=3.6 jupyter jupyterlab jupyter_contrib_nbextensions 
-                 traits pandas matplotlib scikit-learn seaborn" \
+                 traits pandas matplotlib scikit-learn seaborn nbformat" \
   pip_install="https://github.com/nipy/nipype/tarball/master 
                https://github.com/INCF/pybids/tarball/master 
                nilearn datalad[full] nipy duecredit" \
