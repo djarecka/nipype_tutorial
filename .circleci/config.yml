@@ -7,10 +7,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: echo "A first hello"
-      - run: 
-          name: dicker buils
-	  command: |
-	    docker build -t djarecka/nipype_tutorial:$CIRCLE_BRANCH .
+      - run: docker build -t djarecka/nipype_tutorial:$CIRCLE_BRANCH .
       - run:
           name: docker run
           command: |
