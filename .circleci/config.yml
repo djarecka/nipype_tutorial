@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run: echo "A first hello"
       - run:
-          name: Change to Python 3.5.2 and install python dependencies
+          name: docker run
           command: |
-            pyenv global 3.5.2
+            docker run -it --rm djarecka/nipype_tutorial
          
