@@ -5,6 +5,7 @@ jobs:
       - image: djarecka/nipype_tutorial
     steps:
       - checkout
+      - setup_remote_docker:
       - run: echo "A first hello"
       - run:
           name: docker run
