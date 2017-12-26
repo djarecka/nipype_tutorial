@@ -5,7 +5,8 @@ jobs:
       - image: docker:17.10.0-ce-git
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: echo "A first hello"
       - run: docker build -t djarecka/nipype_tutorial:$CIRCLE_BRANCH .
       - run:
