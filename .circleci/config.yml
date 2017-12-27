@@ -12,7 +12,7 @@ jobs:
           name: docker pull
           no_output_timeout: 60m
           command: |
-            docker pull djarecka/nipype_tutorial
+            docker pull djarecka/nipype_tutorial:latest
       -run: docker cp test_notebooks.py djarecka/nipype_tutorial:/home/neuro/nipype_tutorial
       - run:
           name: docker run
