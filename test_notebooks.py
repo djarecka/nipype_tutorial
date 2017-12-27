@@ -32,8 +32,12 @@ def _notebook_run(path):
 
     return nb, errors
 
-@pytest.mark.parametrize("notebook", glob("notebooks/basic*.ipynb")+
-                         ["notebooks/introduction_python.ipynb", "notebooks/introduction_quickstart.ipynb"] )
+
+Dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "notebooks")
+
+@pytest.mark.parametrize("notebook", glob(os.path.join(Dir_path, "basic*.ipynb"))+
+                         [os.path.join(Dir_path, "introduction_python.ipynb"), 
+                          os.path.join(Dir_path, "introduction_quickstart.ipynb")] )
 def test_notebooks(notebook):
     t0 = time.time()
     nb, errors = _notebook_run(notebook)
