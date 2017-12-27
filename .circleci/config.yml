@@ -9,13 +9,14 @@ jobs:
           docker_layer_caching: true
       - run: echo "A first hello"
       - run: 
-          name: docker build
+          name: docker pull
           no_output_timeout: 60m
           command: |
-            docker build -t djarecka/nipype_tutorial:$CIRCLE_BRANCH .
+            docker pull djarecka/nipype_tutorial
+      -run: docker cp test_notebooks.py djarecka/nipype_tutorial:/home/neuro/nipype_tutorial
       - run:
           name: docker run
           no_output_timeout: 60m
           command: |
-            docker run -it --rm djarecka/nipype_tutorial:$CIRCLE_BRANCH pytest /home/neuro/nipype_tutorial/test_notebooks.py
+            docker run -it --rm djarecka/nipype_tutorial pytest /home/neuro/nipype_tutorial/test_notebooks.py
          
