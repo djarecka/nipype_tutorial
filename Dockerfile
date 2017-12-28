@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2017-12-26 21:24:19
+# Timestamp: 2017-12-28 12:53:30
 
 FROM neurodebian:stretch-non-free
 
@@ -102,6 +102,7 @@ RUN echo "Downloading Miniconda installer ..." \
 # Create conda environment
 #-------------------------
 RUN conda create -y -q --name neuro python=3.6 \
+                                    pytest \
                                     jupyter \
                                     jupyterlab \
                                     jupyter_contrib_nbextensions \
@@ -209,7 +210,7 @@ RUN echo '{ \
     \n    [ \
     \n      "miniconda", \
     \n      { \
-    \n        "conda_install": "python=3.6 jupyter jupyterlab jupyter_contrib_nbextensions traits pandas matplotlib scikit-learn seaborn nbformat", \
+    \n        "conda_install": "python=3.6 pytest jupyter jupyterlab jupyter_contrib_nbextensions traits pandas matplotlib scikit-learn seaborn nbformat", \
     \n        "pip_install": "https://github.com/nipy/nipype/tarball/master https://github.com/INCF/pybids/tarball/master nilearn datalad[full] nipy duecredit", \
     \n        "env_name": "neuro", \
     \n        "activate": true \
@@ -277,6 +278,6 @@ RUN echo '{ \
     \n      ] \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2017-12-26 21:24:19", \
+    \n  "generation_timestamp": "2017-12-28 12:53:30", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json

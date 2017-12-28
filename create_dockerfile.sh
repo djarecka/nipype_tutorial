@@ -8,7 +8,7 @@ docker run --rm kaczmarj/neurodocker:master generate -b neurodebian:stretch-non-
 --spm version=12 matlab_version=R2017a \
 --user=neuro \
 --miniconda \
-  conda_install="python=3.6 jupyter jupyterlab jupyter_contrib_nbextensions 
+  conda_install="python=3.6 pytest jupyter jupyterlab jupyter_contrib_nbextensions 
                  traits pandas matplotlib scikit-learn seaborn nbformat" \
   pip_install="https://github.com/nipy/nipype/tarball/master 
                https://github.com/INCF/pybids/tarball/master 
