@@ -17,5 +17,5 @@ jobs:
           name: docker run
           no_output_timeout: 60m
           command: |
-            docker run -it --rm djarecka/nipype_tutorial:$CIRCLE_BRANCH pytest -v -s /home/neuro/nipype_tutorial/test_notebooks.py
+            docker run -it --rm djarecka/nipype_tutorial:$CIRCLE_BRANCH pytest -v -s /home/neuro/nipype_tutorial/test_nipype.py
          
