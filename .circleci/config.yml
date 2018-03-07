@@ -12,7 +12,7 @@ jobs:
           no_output_timeout: 60m
           command: |
             for i in {1..5}; do
-               ech "hello" && break || sleep 15
+               ech "hello" && break || sleep 1
             done 
 
          
