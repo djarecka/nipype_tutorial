@@ -1,11 +1,8 @@
 #!/bin/bash
 
 docker run --rm kaczmarj/neurodocker:master generate -b neurodebian:stretch-non-free -p apt \
---install convert3d ants fsl gcc g++ graphviz tree \
-          git-annex-standalone vim emacs-nox nano less ncdu \
+--install git-annex-standalone vim emacs-nox nano less ncdu \
           tig git-annex-remote-rclone \
---add-to-entrypoint "source /etc/fsl/fsl.sh" \
---spm version=12 matlab_version=R2017a \
 --user=neuro \
 --miniconda miniconda_version="4.3.31" \
   conda_install="python=3.6 pytest jupyter jupyterlab jupyter_contrib_nbextensions 

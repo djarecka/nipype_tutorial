@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-03-07 15:33:37
+# Timestamp: 2018-03-13 03:05:12
 
 FROM neurodebian:stretch-non-free
 
@@ -33,14 +33,7 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends  \
 ENTRYPOINT ["/neurodocker/startup.sh"]
 
 RUN apt-get update -qq \
-    && apt-get install -y -q --no-install-recommends convert3d \
-                                                     ants \
-                                                     fsl \
-                                                     gcc \
-                                                     g++ \
-                                                     graphviz \
-                                                     tree \
-                                                     git-annex-standalone \
+    && apt-get install -y -q --no-install-recommends git-annex-standalone \
                                                      vim \
                                                      emacs-nox \
                                                      nano \
@@ -50,34 +43,6 @@ RUN apt-get update -qq \
                                                      git-annex-remote-rclone \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Add command(s) to entrypoint
-RUN sed -i '$isource /etc/fsl/fsl.sh' $ND_ENTRYPOINT
-
-#----------------------
-# Install MCR and SPM12
-#----------------------
-# Install MATLAB Compiler Runtime
-RUN apt-get update -qq && apt-get install -yq --no-install-recommends libxext6 libxt6 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && echo "Downloading MATLAB Compiler Runtime ..." \
-    && curl -sSL --retry 5 -o /tmp/mcr.zip https://www.mathworks.com/supportfiles/downloads/R2017a/deployment_files/R2017a/installers/glnxa64/MCR_R2017a_glnxa64_installer.zip \
-    && unzip -q /tmp/mcr.zip -d /tmp/mcrtmp \
-    && /tmp/mcrtmp/install -destinationFolder /opt/mcr -mode silent -agreeToLicense yes \
-    && rm -rf /tmp/*
-
-# Install standalone SPM
-RUN echo "Downloading standalone SPM ..." \
-    && curl -sSL --retry 5 -o spm.zip http://www.fil.ion.ucl.ac.uk/spm/download/restricted/utopia/dev/spm12_latest_Linux_R2017a.zip \
-    && unzip -q spm.zip -d /opt \
-    && chmod -R 777 /opt/spm* \
-    && rm -rf spm.zip \
-    && /opt/spm12/run_spm12.sh /opt/mcr/v92/ quit \
-    && sed -i '$iexport SPMMCRCMD=\"/opt/spm12/run_spm12.sh /opt/mcr/v92/ script\"' $ND_ENTRYPOINT
-ENV MATLABCMD=/opt/mcr/v92/toolbox/matlab \
-    FORCE_SPMMCR=1 \
-    LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/opt/mcr/v92/runtime/glnxa64:/opt/mcr/v92/bin/glnxa64:/opt/mcr/v92/sys/os/glnxa64:$LD_LIBRARY_PATH
 
 # Create new user: neuro
 RUN useradd --no-user-group --create-home --shell /bin/bash neuro
@@ -172,13 +137,6 @@ RUN echo '{ \
     \n    [ \
     \n      "install", \
     \n      [ \
-    \n        "convert3d", \
-    \n        "ants", \
-    \n        "fsl", \
-    \n        "gcc", \
-    \n        "g++", \
-    \n        "graphviz", \
-    \n        "tree", \
     \n        "git-annex-standalone", \
     \n        "vim", \
     \n        "emacs-nox", \
@@ -188,19 +146,6 @@ RUN echo '{ \
     \n        "tig", \
     \n        "git-annex-remote-rclone" \
     \n      ] \
-    \n    ], \
-    \n    [ \
-    \n      "add_to_entrypoint", \
-    \n      [ \
-    \n        "source /etc/fsl/fsl.sh" \
-    \n      ] \
-    \n    ], \
-    \n    [ \
-    \n      "spm", \
-    \n      { \
-    \n        "version": "12", \
-    \n        "matlab_version": "R2017a" \
-    \n      } \
     \n    ], \
     \n    [ \
     \n      "user", \
@@ -278,6 +223,6 @@ RUN echo '{ \
     \n      ] \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-03-07 15:33:37", \
+    \n  "generation_timestamp": "2018-03-13 03:05:12", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json
