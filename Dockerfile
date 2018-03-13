@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-03-13 03:05:12
+# Timestamp: 2018-03-13 03:14:22
 
 FROM neurodebian:stretch-non-free
 
@@ -33,7 +33,14 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends  \
 ENTRYPOINT ["/neurodocker/startup.sh"]
 
 RUN apt-get update -qq \
-    && apt-get install -y -q --no-install-recommends git-annex-standalone \
+    && apt-get install -y -q --no-install-recommends convert3d \
+                                                     ants \
+                                                     fsl \
+                                                     gcc \
+                                                     g++ \
+                                                     graphviz \
+                                                     tree \
+                                                     git-annex-standalone \
                                                      vim \
                                                      emacs-nox \
                                                      nano \
@@ -43,6 +50,9 @@ RUN apt-get update -qq \
                                                      git-annex-remote-rclone \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Add command(s) to entrypoint
+RUN sed -i '$isource /etc/fsl/fsl.sh' $ND_ENTRYPOINT
 
 # Create new user: neuro
 RUN useradd --no-user-group --create-home --shell /bin/bash neuro
@@ -137,6 +147,13 @@ RUN echo '{ \
     \n    [ \
     \n      "install", \
     \n      [ \
+    \n        "convert3d", \
+    \n        "ants", \
+    \n        "fsl", \
+    \n        "gcc", \
+    \n        "g++", \
+    \n        "graphviz", \
+    \n        "tree", \
     \n        "git-annex-standalone", \
     \n        "vim", \
     \n        "emacs-nox", \
@@ -145,6 +162,12 @@ RUN echo '{ \
     \n        "ncdu", \
     \n        "tig", \
     \n        "git-annex-remote-rclone" \
+    \n      ] \
+    \n    ], \
+    \n    [ \
+    \n      "add_to_entrypoint", \
+    \n      [ \
+    \n        "source /etc/fsl/fsl.sh" \
     \n      ] \
     \n    ], \
     \n    [ \
@@ -223,6 +246,6 @@ RUN echo '{ \
     \n      ] \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-03-13 03:05:12", \
+    \n  "generation_timestamp": "2018-03-13 03:14:22", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json
