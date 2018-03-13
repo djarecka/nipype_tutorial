@@ -1,6 +1,6 @@
 # Nipype Tutorial Notebooks
 
-This is the Nipype Tutorial in Notebooks. There are multiple ways of how you can profit from this tutorial:
+ This is the Nipype Tutorial in Notebooks. There are multiple ways of how you can profit from this tutorial:
 
 1. [Nipype Tutorial Homepage](https://miykael.github.io/nipype_tutorial/): You can find all notebooks used in this tutorial on this homepage.
 2. [Nipype Tutorial Docker Image](https://miykael.github.io/nipype_tutorial/notebooks/introduction_docker.html): Run the notebooks of this tutorial in an interactive docker image and on real example data. The nipype tutorial docker image is the best interactive way to learn Nipype.
