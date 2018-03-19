@@ -7,7 +7,7 @@ docker run --rm kaczmarj/neurodocker:master generate -b neurodebian:stretch-non-
 --add-to-entrypoint "source /etc/fsl/fsl.sh" \
 --user=neuro \
 --miniconda miniconda_version="4.3.31" \
-  conda_install="python=3.6 pytest  traits pandas matplotlib=2.1.2 scikit-learn seaborn nbformat" \
+  conda_install="python=3.6 pytest jupyter jupyterlab jupyter_contrib_nbextensions traits pandas matplotlib=2.1.2 scikit-learn seaborn nbformat" \
   pip_install="https://github.com/nipy/nipype/tarball/master 
                https://github.com/INCF/pybids/tarball/master 
                nilearn datalad[full] nipy duecredit" \
