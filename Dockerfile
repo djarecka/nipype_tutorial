@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-03-07 15:33:37
+# Timestamp: 2018-03-19 17:37:21
 
 FROM neurodebian:stretch-non-free
 
@@ -54,31 +54,6 @@ RUN apt-get update -qq \
 # Add command(s) to entrypoint
 RUN sed -i '$isource /etc/fsl/fsl.sh' $ND_ENTRYPOINT
 
-#----------------------
-# Install MCR and SPM12
-#----------------------
-# Install MATLAB Compiler Runtime
-RUN apt-get update -qq && apt-get install -yq --no-install-recommends libxext6 libxt6 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && echo "Downloading MATLAB Compiler Runtime ..." \
-    && curl -sSL --retry 5 -o /tmp/mcr.zip https://www.mathworks.com/supportfiles/downloads/R2017a/deployment_files/R2017a/installers/glnxa64/MCR_R2017a_glnxa64_installer.zip \
-    && unzip -q /tmp/mcr.zip -d /tmp/mcrtmp \
-    && /tmp/mcrtmp/install -destinationFolder /opt/mcr -mode silent -agreeToLicense yes \
-    && rm -rf /tmp/*
-
-# Install standalone SPM
-RUN echo "Downloading standalone SPM ..." \
-    && curl -sSL --retry 5 -o spm.zip http://www.fil.ion.ucl.ac.uk/spm/download/restricted/utopia/dev/spm12_latest_Linux_R2017a.zip \
-    && unzip -q spm.zip -d /opt \
-    && chmod -R 777 /opt/spm* \
-    && rm -rf spm.zip \
-    && /opt/spm12/run_spm12.sh /opt/mcr/v92/ quit \
-    && sed -i '$iexport SPMMCRCMD=\"/opt/spm12/run_spm12.sh /opt/mcr/v92/ script\"' $ND_ENTRYPOINT
-ENV MATLABCMD=/opt/mcr/v92/toolbox/matlab \
-    FORCE_SPMMCR=1 \
-    LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/opt/mcr/v92/runtime/glnxa64:/opt/mcr/v92/bin/glnxa64:/opt/mcr/v92/sys/os/glnxa64:$LD_LIBRARY_PATH
-
 # Create new user: neuro
 RUN useradd --no-user-group --create-home --shell /bin/bash neuro
 USER neuro
@@ -117,7 +92,7 @@ RUN conda create -y -q --name neuro python=3.6 \
       && pip install -q --no-cache-dir https://github.com/nipy/nipype/tarball/master \
                                        https://github.com/INCF/pybids/tarball/master \
                                        nilearn \
-                                       datalad[full]==0.9.1 \
+                                       datalad[full] \
                                        nipy \
                                        duecredit" \
     && sync \
@@ -140,7 +115,7 @@ RUN mkdir /output && chmod 777 /output && chmod a+s /output
 USER neuro
 
 # User-defined BASH instruction
-RUN bash -c "source activate neuro && cd	/data && datalad install -r ///workshops/nih-2017/ds000114 && cd ds000114 && paths=\"///workshops/nih-2017/ds000114 && cd ds000114 && datalad get -r -J4 sub-*/ses-test/anat  sub-*/ses-test/func/*fingerfootlips* derivatives/fmriprep/sub-*/anat/*space-mni152nlin2009casym_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*t1w_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*h5  derivatives/freesurfer/sub-01\" && datalad --report-status=failure get -r -J4 \"$paths\"  || datalad --report-status=failure get -r \"$paths\""
+RUN bash -c "source activate neuro && cd	/data && datalad install -r ///workshops/nih-2017/ds000114 && cd ds000114 && paths=\"sub-*/ses-test/anat  sub-*/ses-test/func/*fingerfootlips* derivatives/fmriprep/sub-*/anat/*space-mni152nlin2009casym_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*t1w_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*h5  derivatives/freesurfer/sub-01\" && datalad --report-status=failure get -r -J4 \"$paths\""
 
 # User-defined BASH instruction
 RUN bash -c "curl -L https://files.osf.io/v1/resources/fvuh8/providers/osfstorage/580705089ad5a101f17944a9 -o /data/ds000114/derivatives/fmriprep/mni_icbm152_nlin_asym_09c.tar.gz && tar xf /data/ds000114/derivatives/fmriprep/mni_icbm152_nlin_asym_09c.tar.gz -C /data/ds000114/derivatives/fmriprep/. && rm /data/ds000114/derivatives/fmriprep/mni_icbm152_nlin_asym_09c.tar.gz"
@@ -196,13 +171,6 @@ RUN echo '{ \
     \n      ] \
     \n    ], \
     \n    [ \
-    \n      "spm", \
-    \n      { \
-    \n        "version": "12", \
-    \n        "matlab_version": "R2017a" \
-    \n      } \
-    \n    ], \
-    \n    [ \
     \n      "user", \
     \n      "neuro" \
     \n    ], \
@@ -211,7 +179,7 @@ RUN echo '{ \
     \n      { \
     \n        "miniconda_version": "4.3.31", \
     \n        "conda_install": "python=3.6 pytest jupyter jupyterlab jupyter_contrib_nbextensions traits pandas matplotlib=2.1.2 scikit-learn seaborn nbformat", \
-    \n        "pip_install": "https://github.com/nipy/nipype/tarball/master https://github.com/INCF/pybids/tarball/master nilearn datalad[full]==0.9.1 nipy duecredit", \
+    \n        "pip_install": "https://github.com/nipy/nipype/tarball/master https://github.com/INCF/pybids/tarball/master nilearn datalad[full] nipy duecredit", \
     \n        "env_name": "neuro", \
     \n        "activate": true \
     \n      } \
@@ -242,7 +210,7 @@ RUN echo '{ \
     \n    ], \
     \n    [ \
     \n      "run_bash", \
-    \n      "source activate neuro && cd\t/data && datalad install -r ///workshops/nih-2017/ds000114 && cd ds000114 && paths=\"///workshops/nih-2017/ds000114 && cd ds000114 && datalad get -r -J4 sub-*/ses-test/anat  sub-*/ses-test/func/*fingerfootlips* derivatives/fmriprep/sub-*/anat/*space-mni152nlin2009casym_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*t1w_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*h5  derivatives/freesurfer/sub-01\" && datalad --report-status=failure get -r -J4 \"$paths\"  || datalad --report-status=failure get -r \"$paths\"" \
+    \n      "source activate neuro && cd\t/data && datalad install -r ///workshops/nih-2017/ds000114 && cd ds000114 && paths=\"sub-*/ses-test/anat  sub-*/ses-test/func/*fingerfootlips* derivatives/fmriprep/sub-*/anat/*space-mni152nlin2009casym_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*t1w_preproc.nii.gz  derivatives/fmriprep/sub-*/anat/*h5  derivatives/freesurfer/sub-01\" && datalad --report-status=failure get -r -J4 \"$paths\"" \
     \n    ], \
     \n    [ \
     \n      "run_bash", \
@@ -278,6 +246,6 @@ RUN echo '{ \
     \n      ] \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-03-07 15:33:37", \
+    \n  "generation_timestamp": "2018-03-19 17:37:21", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json
