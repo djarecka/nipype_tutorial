@@ -12,6 +12,7 @@ def test_version():
     from nipype.info import get_nipype_gitversion
     print("nipype version: {}; commit hash: {}".format(
             nipype.__version__, nipype.get_info()['commit_hash']))
+    print("nipype.get_info()", nipype.get_info())
     print("get_nipype_gitversion: {}".format(get_nipype_gitversion()))
 
 
