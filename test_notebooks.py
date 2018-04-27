@@ -9,7 +9,8 @@ from nbconvert.preprocessors.execute import CellExecutionError
 
 def test_version():
     import nipype
-    print("nipype version: ", nipype.__version__)
+    print("nipype version: {}; commit hash: {}".format(
+            nipype.__version__, nipype.get_info()['commit_hash']))
 
 
 def _notebook_run(path):
