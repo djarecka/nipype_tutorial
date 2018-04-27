@@ -8,6 +8,7 @@ from nbconvert.preprocessors.execute import CellExecutionError
 
 
 def test_version():
+    # just for testing
     import nipype
     print("nipype version: ", nipype.__version__)
 
