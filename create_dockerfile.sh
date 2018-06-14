@@ -5,13 +5,13 @@ docker run --rm kaczmarj/neurodocker:master generate docker\
            --pkg-manager apt \
            --install fsl-5.0-core fsl-mni152-templates \
                      vim emacs-nox nano less ncdu git-annex-standalone \
-           --add-to-entrypoint "source /etc/fsl/fsl.sh" \
+           --add-to-entrypoint "source /etc/fsl/5.0/fsl.sh" \
            --user=neuro \
            --miniconda miniconda_version="4.3.31" \
              conda_install="python=3.6 pytest jupyter jupyterlab jupyter_contrib_nbextensions
-                            traits pandas matplotlib" \
+                            traits pandas matplotlib  scikit-learn scikit-image nbformat nb_conda" \
              pip_install="https://github.com/nipy/nipype/tarball/master
-                          datalad[full]" \
+                          nilearn datalad[full]" \
              create_env="neuro" \
              activate=True \
            --run-bash "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main" \
