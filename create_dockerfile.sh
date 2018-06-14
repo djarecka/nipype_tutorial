@@ -17,6 +17,7 @@ docker run --rm kaczmarj/neurodocker:master generate docker\
            --run-bash "source activate neuro && jupyter nbextension enable exercise2/main && jupyter nbextension enable spellchecker/main" \
            --user=root \
            --run 'mkdir /data && chmod 777 /data && chmod a+s /data' \
+	   --run 'mkdir /output && chmod 777 /output && chmod a+s /output' \
            --user=neuro \
            --run-bash 'source activate neuro && cd /data && datalad install -r ///workshops/nih-2017/ds000114 && cd ds000114 && datalad update -r && datalad get -r sub-01/ses-test/anat  sub-02/ses-test/anat' \
 	   --copy . "/home/neuro/nipype_tutorial" \
