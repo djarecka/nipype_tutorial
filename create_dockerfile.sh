@@ -3,7 +3,7 @@
 docker run --rm kaczmarj/neurodocker:master generate docker\
            --base neurodebian:stretch-non-free \
            --pkg-manager apt \
-           --install fsl-5.0-core fsl-mni152-templates \
+           --install fsl-5.0-core fsl-mni152-templates graphviz \
                      vim emacs-nox nano less ncdu git-annex-standalone \
            --add-to-entrypoint "source /etc/fsl/5.0/fsl.sh" \
            --user=neuro \
