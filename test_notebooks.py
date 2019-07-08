@@ -4,6 +4,7 @@ import time
 from glob import glob
 
 def test_version():
+    print("just testing")
     import nipype
     print("nipype version: ", nipype.__version__)
 
