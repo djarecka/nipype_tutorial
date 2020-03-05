@@ -136,7 +136,7 @@ RUN export PATH="/opt/miniconda-latest/bin:$PATH" \
     && sync && conda clean --all && sync \
     && bash -c "source activate neuro \
     &&   pip install --no-cache-dir  \
-             https://github.com/nipy/nipype/tarball/master \
+             https://github.com/nipy/nipype/tarball/rel/1.5.0 \
              https://github.com/INCF/pybids/tarball/0.7.1 \
              niflow-nipype1-workflows \
              nilearn \

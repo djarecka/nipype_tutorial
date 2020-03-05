@@ -10,8 +10,7 @@ jobs:
       - image: docker:18.05.0-ce-git
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: docker build 1
           no_output_timeout: 60m
@@ -27,8 +26,7 @@ jobs:
       - image: docker:18.05.0-ce-git
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: docker build 2
           no_output_timeout: 60m
@@ -44,8 +42,7 @@ jobs:
       - image: docker:18.05.0-ce-git
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: docker build 3
           no_output_timeout: 60m
